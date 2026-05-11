@@ -153,11 +153,19 @@ export function MindView({ onChange }: Props) {
       )}
 
       {filtered.length === 0 ? (
-        <p className="text-center text-ink-4 text-xs py-6">
-          {nodes.length === 0
-            ? 'Your Mind is empty — record an entry or add nodes manually.'
-            : 'No matches.'}
-        </p>
+        nodes.length === 0 ? (
+          <div className="px-6 py-10 text-center space-y-4">
+            <div className="text-5xl">🧠</div>
+            <div>
+              <p className="text-base font-medium">Your Mind is empty</p>
+              <p className="text-xs text-ink-4 mt-1 leading-relaxed max-w-xs mx-auto">
+                Skills you have, knowledge you've gathered, tools you use. Record an entry and Claude proposes nodes — or add the first one with a button above.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <p className="text-center text-ink-4 text-xs py-6">No matches.</p>
+        )
       ) : (
         <div className="space-y-2">
           {filtered.map((n) => (

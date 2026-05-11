@@ -71,7 +71,7 @@ interface Props {
 export function BottomNav({ active, onChange }: Props) {
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 bg-ink-1/95 backdrop-blur border-t border-ink-2"
+      className="fixed bottom-0 left-0 right-0 bg-ink-1/90 backdrop-blur-lg border-t border-ink-2"
       style={{ paddingBottom: 'var(--safe-bottom)' }}
     >
       <div className="grid grid-cols-5">
@@ -81,10 +81,12 @@ export function BottomNav({ active, onChange }: Props) {
             <button
               key={t.key}
               onClick={() => onChange(t.key)}
-              className={`flex flex-col items-center gap-1 py-2.5 ${isActive ? 'text-accent' : 'text-ink-4'} active:bg-ink-2/40`}
+              className={`flex flex-col items-center gap-1 py-2.5 transition active:scale-90 ${isActive ? 'text-accent' : 'text-ink-4'}`}
             >
-              {t.icon(isActive)}
-              <span className="text-[10px] font-medium">{t.label}</span>
+              <span className={`flex items-center justify-center transition ${isActive ? 'scale-110' : ''}`}>
+                {t.icon(isActive)}
+              </span>
+              <span className="text-[10px] font-medium tracking-wide">{t.label}</span>
             </button>
           );
         })}
