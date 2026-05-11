@@ -9,10 +9,8 @@ import type {
   ProposedMark,
   ProposedNode,
 } from '../types';
+import { getAnthropicKey } from '../utils/settings';
 
-const ANTHROPIC_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY as
-  | string
-  | undefined;
 const MODEL = 'claude-sonnet-4-6';
 
 interface ContextSnapshot {
@@ -190,8 +188,9 @@ export async function extractFromTranscript(
   ctx: ContextSnapshot,
 ): Promise<ExtractionResult> {
   if (!transcript.trim()) return EMPTY;
+  const ANTHROPIC_KEY = getAnthropicKey();
   if (!ANTHROPIC_KEY) {
-    console.warn('[claude-extraction] no VITE_ANTHROPIC_API_KEY — returning empty');
+    console.warn('[claude-extraction] no Anthropic key — returning empty');
     return { ...EMPTY, summary: transcript.slice(0, 140) };
   }
 

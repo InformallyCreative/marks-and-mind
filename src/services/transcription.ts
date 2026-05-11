@@ -1,6 +1,6 @@
 // Voice → text. Whisper API primary, browser Web Speech API fallback.
 
-const OPENAI_KEY = import.meta.env.VITE_OPENAI_API_KEY as string | undefined;
+import { getOpenAIKey } from '../utils/settings';
 
 export interface TranscriptionResult {
   text: string;
@@ -12,8 +12,9 @@ export async function transcribeWithWhisper(
   blob: Blob,
   language = 'en',
 ): Promise<TranscriptionResult> {
+  const OPENAI_KEY = getOpenAIKey();
   if (!OPENAI_KEY) {
-    throw new Error('VITE_OPENAI_API_KEY is not set');
+    throw new Error('OpenAI API key not set (add it in Settings)');
   }
   const form = new FormData();
   // The file extension matters to Whisper. The MediaRecorder typically
