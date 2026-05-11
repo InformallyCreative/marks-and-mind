@@ -148,7 +148,7 @@ function Sparkline({ points }: { points: number[] }) {
     .join(' ');
   return (
     <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-10">
-      <path d={d} fill="none" stroke="#7c5cff" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+      <path d={d} fill="none" stroke="#a855f7" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }

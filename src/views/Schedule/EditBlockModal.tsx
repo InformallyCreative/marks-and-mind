@@ -142,19 +142,19 @@ export function EditBlockModal({ block, onClose, onSaved }: Props) {
           </div>
         </div>
 
-        <div className="flex gap-1.5 flex-wrap text-xs">
-          {[15, 30, 45, 60, 90, 120].map((m) => (
+        <div className="flex gap-1 flex-wrap text-xs">
+          {[15, 30, 45, 60, 90, 120, 180, 240].map((m) => (
             <button
               key={m}
               onClick={() => setMinutes(m)}
-              className={`px-2.5 py-1 rounded-md ${minutes === m ? 'bg-accent text-white' : 'bg-ink-2 text-ink-4'}`}
+              className={`px-2 py-1 rounded-md ${minutes === m ? 'bg-accent text-white' : 'bg-ink-2 text-ink-4'}`}
             >
               {m}m
             </button>
           ))}
         </div>
 
-        <div className="text-[11px] text-ink-4">
+        <div className="text-[11px] text-gold-soft">
           Worth +{xpForBlock(minutes)} XP when completed.
         </div>
 

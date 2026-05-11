@@ -13,8 +13,8 @@ export default defineConfig({
         short_name: 'M&M',
         description:
           'Voice-first personal OS — Marks, Mind, Schedule, Journal.',
-        theme_color: '#0a0a0f',
-        background_color: '#0a0a0f',
+        theme_color: '#0a0e1f',
+        background_color: '#0a0e1f',
         display: 'standalone',
         orientation: 'portrait',
         start_url: '/',

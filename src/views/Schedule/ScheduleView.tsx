@@ -112,24 +112,24 @@ export function ScheduleView({ onChange }: Props) {
 
   return (
     <div className="px-4 py-3 space-y-3">
-      {/* Day strip */}
-      <div className="flex gap-1.5 overflow-x-auto -mx-4 px-4 pb-1 scrollbar-hide">
+      {/* Day strip — sized to fit 7 days on a ~360px viewport without scrolling */}
+      <div className="flex gap-1 overflow-x-auto -mx-4 px-4 pb-1 scrollbar-hide">
         {dayStrip.map((d) => {
           const active = d.iso === selectedDay;
           return (
             <button
               key={d.iso}
               onClick={() => setSelectedDay(d.iso)}
-              className={`shrink-0 w-14 py-2 rounded-xl flex flex-col items-center transition active:scale-95 ${
+              className={`shrink-0 flex-1 min-w-[44px] py-1.5 rounded-xl flex flex-col items-center transition active:scale-95 ${
                 active
-                  ? 'bg-accent text-white shadow shadow-accent/30'
+                  ? 'bg-accent text-white shadow-glow'
                   : 'bg-ink-1 border border-ink-2 text-ink-4'
               }`}
             >
-              <span className="text-[10px] uppercase tracking-wide">{d.dow}</span>
-              <span className={`text-lg font-semibold leading-none mt-0.5 ${active ? '' : 'text-white'}`}>{d.dayNum}</span>
+              <span className="text-[9px] uppercase tracking-wide">{d.dow}</span>
+              <span className={`text-base font-semibold leading-none mt-0.5 ${active ? '' : 'text-white'}`}>{d.dayNum}</span>
               {d.count > 0 && (
-                <span className={`mt-1 w-1 h-1 rounded-full ${active ? 'bg-white/80' : 'bg-accent'}`} />
+                <span className={`mt-1 w-1 h-1 rounded-full ${active ? 'bg-white/80' : 'bg-sky'}`} />
               )}
             </button>
           );
@@ -162,7 +162,7 @@ export function ScheduleView({ onChange }: Props) {
             placeholder="Block title (start with a verb)"
             className="w-full bg-ink-2 border border-ink-3 rounded-md p-2 text-sm"
           />
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="text-[10px] uppercase tracking-wide text-ink-4">Time</label>
               <input
@@ -173,7 +173,10 @@ export function ScheduleView({ onChange }: Props) {
               />
             </div>
             <div>
-              <label className="text-[10px] uppercase tracking-wide text-ink-4">Mins</label>
+              <label className="text-[10px] uppercase tracking-wide text-ink-4 flex justify-between">
+                <span>Mins</span>
+                <span className="text-gold-soft font-mono normal-case tracking-normal">+{xpForBlock(draft.minutes)} XP</span>
+              </label>
               <input
                 type="number"
                 min={5}
@@ -185,12 +188,6 @@ export function ScheduleView({ onChange }: Props) {
                 }
                 className="w-full bg-ink-2 border border-ink-3 rounded-md p-1.5 text-sm mt-0.5"
               />
-            </div>
-            <div>
-              <label className="text-[10px] uppercase tracking-wide text-ink-4">XP</label>
-              <div className="bg-ink-2 border border-ink-3 rounded-md p-1.5 text-sm mt-0.5 font-mono text-accent-soft">
-                +{xpForBlock(draft.minutes)}
-              </div>
             </div>
           </div>
           <div className="flex flex-wrap gap-1 text-xs">

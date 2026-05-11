@@ -5,20 +5,40 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Background palette — deep navy instead of pure gray for a more
+        // saturated, slightly Fortnite-y mood.
         ink: {
-          0: '#0a0a0f',
-          1: '#11111a',
-          2: '#1a1a26',
-          3: '#262633',
-          4: '#3a3a4a',
+          0: '#0a0e1f', // app background
+          1: '#14182e', // cards
+          2: '#1d2240', // inputs / inner panels
+          3: '#2d3464', // borders, subtle controls
+          4: '#6068a8', // muted text (lifted toward periwinkle)
         },
+        // Primary — vivid Fortnite purple.
         accent: {
-          DEFAULT: '#7c5cff',
-          soft: '#a89cff',
+          DEFAULT: '#a855f7',
+          soft: '#c4b5fd',
         },
-        good: '#34d399',
-        warn: '#fbbf24',
-        bad: '#f87171',
+        // Secondary — electric blue. Use for time/schedule cues and
+        // knowledge-type mind nodes.
+        sky: {
+          DEFAULT: '#38bdf8',
+          soft: '#7dd3fc',
+        },
+        // Completion / XP / wins — gold yellow.
+        gold: {
+          DEFAULT: '#facc15',
+          soft: '#fde68a',
+        },
+        // Semantic aliases used across the app
+        good: '#facc15', // done / hit / completed — gold
+        warn: '#fb923c', // skipped / dropped — orange
+        bad: '#f87171', // delete / error — red-pink
+      },
+      boxShadow: {
+        glow: '0 0 24px -4px rgba(168, 85, 247, 0.55)',
+        'glow-sky': '0 0 18px -2px rgba(56, 189, 248, 0.45)',
+        'glow-gold': '0 0 18px -2px rgba(250, 204, 21, 0.45)',
       },
       fontFamily: {
         sans: [

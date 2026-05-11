@@ -15,13 +15,19 @@ html,
 body,
 #root {
   height: 100%;
-  background-color: #0a0a0f;
+  background-color: #0a0e1f;
 }
 
 body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
+  /* Subtle Fortnite-y ambient glow: purple from bottom-left, blue from top-right */
+  background:
+    radial-gradient(ellipse 60% 50% at 10% 100%, rgba(168, 85, 247, 0.10), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 0%, rgba(56, 189, 248, 0.08), transparent 60%),
+    #0a0e1f;
+  background-attachment: fixed;
 }
 
 button {

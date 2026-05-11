@@ -130,7 +130,7 @@ export function TimelineGrid({ day, blocks, onTapBlock, onTapEmptySlot }: Props)
     >
       <div
         className="relative"
-        style={{ height: GRID_HEIGHT, paddingLeft: 44 }}
+        style={{ height: GRID_HEIGHT, paddingLeft: 36 }}
       >
         {/* Hour labels + lines */}
         {Array.from({ length: HOURS + 1 }).map((_, i) => {
@@ -139,14 +139,14 @@ export function TimelineGrid({ day, blocks, onTapBlock, onTapEmptySlot }: Props)
           const label = formatHour(hour);
           return (
             <div key={hour} className="absolute left-0 right-0 pointer-events-none" style={{ top }}>
-              <div className="absolute left-0 -translate-y-1/2 text-[10px] text-ink-4 font-mono w-10 text-right pr-2">
+              <div className="absolute left-0 -translate-y-1/2 text-[10px] text-ink-4 font-mono w-8 text-right pr-1.5">
                 {label}
               </div>
-              <div className="absolute left-10 right-2 border-t border-ink-2/70" />
+              <div className="absolute left-8 right-1.5 border-t border-ink-2/70" />
               {/* Half-hour ticks */}
               {hour < END_HOUR && (
                 <div
-                  className="absolute left-10 right-2 border-t border-dashed border-ink-2/30"
+                  className="absolute left-8 right-1.5 border-t border-dashed border-ink-2/30"
                   style={{ top: HOUR_HEIGHT / 2 }}
                 />
               )}
@@ -160,7 +160,7 @@ export function TimelineGrid({ day, blocks, onTapBlock, onTapEmptySlot }: Props)
             <button
               key={`slot-${i}`}
               onClick={() => onTapEmptySlot(START_HOUR + i, 0)}
-              className="absolute left-10 right-2 hover:bg-ink-2/40 transition"
+              className="absolute left-8 right-1.5 hover:bg-ink-2/40 transition"
               style={{ top: i * HOUR_HEIGHT, height: HOUR_HEIGHT }}
               aria-label={`Add block at ${formatHour(START_HOUR + i)}`}
             />
@@ -169,7 +169,7 @@ export function TimelineGrid({ day, blocks, onTapBlock, onTapEmptySlot }: Props)
         {/* "Now" indicator */}
         {nowTopPx !== null && nowTopPx >= 0 && nowTopPx <= GRID_HEIGHT && (
           <div
-            className="absolute left-10 right-2 pointer-events-none z-20"
+            className="absolute left-8 right-1.5 pointer-events-none z-20"
             style={{ top: nowTopPx }}
           >
             <div className="relative">
@@ -191,8 +191,8 @@ export function TimelineGrid({ day, blocks, onTapBlock, onTapEmptySlot }: Props)
               style={{
                 top,
                 height,
-                left: `calc(2.75rem + ${leftPct}% - 2px)`,
-                width: `calc(${widthPct}% - 0.5rem)`,
+                left: `calc(2.25rem + ${leftPct}% - 2px)`,
+                width: `calc(${widthPct}% - 0.375rem)`,
               }}
             />
           );
@@ -216,28 +216,42 @@ function BlockTile({
   const inProgress = block.status === 'in_progress';
   const time = new Date(block.scheduled_for);
   const timeLabel = `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}`;
-  const tall = (style.height as number) >= 60;
+  const heightPx = (style.height as number) || 30;
+  const tall = heightPx >= 56;
+  const tiny = heightPx < 36;
 
   return (
     <button
       onClick={onTap}
       style={style}
-      className={`absolute rounded-lg overflow-hidden text-left px-2.5 py-1.5 transition active:scale-[0.98] border ${
+      className={`absolute rounded-lg overflow-hidden text-left px-2 py-1 transition active:scale-[0.98] border ${
         done
-          ? 'bg-good/15 border-good/40 text-good'
+          ? 'bg-gold/15 border-gold/50 text-gold shadow-glow-gold'
           : skipped
             ? 'bg-ink-2 border-ink-3 text-ink-4 line-through'
             : inProgress
               ? 'bg-warn/15 border-warn/50 text-warn'
-              : 'bg-accent/15 border-accent/50 text-white'
+              : 'bg-sky/15 border-sky/50 text-sky-soft'
       }`}
     >
-      <div className="text-[10px] font-mono opacity-80">{timeLabel} · {block.estimated_minutes}m</div>
-      <div className={`font-medium leading-tight ${tall ? 'text-xs' : 'text-[11px] truncate'}`}>
+      {!tiny && (
+        <div className="text-[9px] font-mono opacity-80 leading-tight">
+          {timeLabel} · {block.estimated_minutes}m
+        </div>
+      )}
+      <div
+        className={`font-medium leading-tight ${tall ? 'text-xs' : 'text-[11px]'}`}
+        style={{
+          display: '-webkit-box',
+          WebkitLineClamp: tiny ? 1 : tall ? 3 : 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+        }}
+      >
         {block.title}
       </div>
       {tall && (
-        <div className="text-[10px] mt-1 opacity-70">
+        <div className="text-[10px] mt-0.5 opacity-70">
           {done ? `+${block.xp_awarded} XP` : `+${xpForBlock(block.estimated_minutes)} XP`}
         </div>
       )}

@@ -18,10 +18,14 @@ export function NodeCard({ node, onDelete, onSave }: Props) {
     setEditing(false);
   }
 
+  // Three Fortnite colors map cleanly to three node types:
+  //   skill = purple (what you can do)
+  //   knowledge = blue (what you know)
+  //   tool = gold (what you use to win)
   const badgeColor = {
     skill: 'bg-accent/15 text-accent-soft',
-    knowledge: 'bg-good/15 text-good',
-    tool: 'bg-warn/15 text-warn',
+    knowledge: 'bg-sky/15 text-sky-soft',
+    tool: 'bg-gold/15 text-gold-soft',
   }[node.type];
 
   return (
