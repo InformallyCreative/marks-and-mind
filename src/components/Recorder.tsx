@@ -4,6 +4,7 @@ import { uuid } from '../utils/uuid';
 import { nowIso } from '../utils/time';
 import { transcribeAudio } from '../services/transcription';
 import { extractFromTranscript } from '../services/claude-extraction';
+import { getOpenAIKey } from '../utils/settings';
 import {
   listMarks,
   listNodes,
@@ -100,15 +101,22 @@ export function Recorder({ onClose, onComplete }: Props) {
   async function processAndSave() {
     if (!blobRef.current) return;
     setError('');
-    setPhase('transcribing');
     let finalTranscript = transcript;
-    try {
-      const result = await transcribeAudio(blobRef.current, transcript);
-      finalTranscript = result.text;
-      setTranscript(result.text);
-    } catch (e) {
-      // No Whisper key and no manual transcript — bail.
-      setError(`Transcription failed: ${(e as Error).message}. Type the transcript and Save manually.`);
+    const hasWhisper = !!getOpenAIKey();
+    if (hasWhisper) {
+      setPhase('transcribing');
+      try {
+        const result = await transcribeAudio(blobRef.current, transcript);
+        finalTranscript = result.text;
+        setTranscript(result.text);
+      } catch (e) {
+        setError(`Transcription failed: ${(e as Error).message}. Type the transcript and Save manually.`);
+        setPhase('recorded');
+        return;
+      }
+    } else if (!finalTranscript.trim()) {
+      // No Whisper key, no manual text — can't proceed
+      setError('No transcript yet. Type the transcript (or tap the iOS mic key) and Save.');
       setPhase('recorded');
       return;
     }
@@ -250,42 +258,57 @@ export function Recorder({ onClose, onComplete }: Props) {
           </div>
         )}
 
-        {phase === 'recorded' && (
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 text-sm text-ink-4">
-              <span>{fmt(seconds)}</span>
-              {audioUrl && <audio controls src={audioUrl} className="flex-1" />}
+        {phase === 'recorded' && (() => {
+          const hasWhisper = !!getOpenAIKey();
+          return (
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-sm text-ink-4">
+                <span>{fmt(seconds)}</span>
+                {audioUrl && <audio controls src={audioUrl} className="flex-1" />}
+              </div>
+              {!hasWhisper && (
+                <p className="text-[11px] text-ink-4 leading-snug bg-ink-2 rounded-md p-2.5">
+                  No OpenAI key set, so auto-transcription is off. Type your transcript
+                  below — or tap the mic key on your iOS keyboard to dictate. Audio is
+                  still saved to the entry.
+                </p>
+              )}
+              <textarea
+                value={transcript}
+                onChange={(e) => setTranscript(e.target.value)}
+                rows={hasWhisper ? 3 : 5}
+                placeholder={hasWhisper
+                  ? 'Optional manual transcript (used if Whisper isn\'t configured)'
+                  : 'Type or dictate the transcript…'}
+                className="w-full bg-ink-2 border border-ink-3 rounded-lg p-3 text-sm placeholder:text-ink-4"
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={discard}
+                  className="flex-1 bg-ink-3 rounded-xl py-3 font-medium text-ink-4"
+                >
+                  Discard
+                </button>
+                <button
+                  onClick={processAndSave}
+                  disabled={!hasWhisper && !transcript.trim()}
+                  className="flex-[2] bg-accent rounded-xl py-3 font-semibold disabled:opacity-40"
+                >
+                  {hasWhisper ? 'Transcribe & sort' : 'Sort & save'}
+                </button>
+              </div>
+              {hasWhisper && (
+                <button
+                  onClick={saveTextOnly}
+                  disabled={!transcript.trim()}
+                  className="w-full text-sm text-ink-4 disabled:opacity-30 underline"
+                >
+                  Skip audio — sort the text only
+                </button>
+              )}
             </div>
-            <textarea
-              value={transcript}
-              onChange={(e) => setTranscript(e.target.value)}
-              rows={3}
-              placeholder="Optional manual transcript (used if Whisper isn't configured)"
-              className="w-full bg-ink-2 border border-ink-3 rounded-lg p-3 text-sm placeholder:text-ink-4"
-            />
-            <div className="flex gap-2">
-              <button
-                onClick={discard}
-                className="flex-1 bg-ink-3 rounded-xl py-3 font-medium text-ink-4"
-              >
-                Discard
-              </button>
-              <button
-                onClick={processAndSave}
-                className="flex-[2] bg-accent rounded-xl py-3 font-semibold"
-              >
-                Transcribe & sort
-              </button>
-            </div>
-            <button
-              onClick={saveTextOnly}
-              disabled={!transcript.trim()}
-              className="w-full text-sm text-ink-4 disabled:opacity-30 underline"
-            >
-              Skip audio — sort the text only
-            </button>
-          </div>
-        )}
+          );
+        })()}
 
         {(phase === 'transcribing' ||
           phase === 'extracting' ||
